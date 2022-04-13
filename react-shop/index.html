@@ -16,60 +16,54 @@
         console.log(React);
         console.log(ReactDOM);
         
-        //{message: '안녕하세요!!'}
-        // function Component(props){
-        //     return (<div><h1>{props.message} 이것은 함수로 만든 컴포넌트 입니다.</h1></div>);
-        // }
-        // Component.defaultProps={
-        //     message: '기본값!!!!',
-
-        // }
-
-        class Component extends React.Component {
-            //state는 항상 객체로만 설정
-            // state = {
-            //     count: 0,
-            // }
+        class App extends React.Component{
+            state = {
+                age: 39,
+            };
+            interval = null;
             constructor(props){
                 super(props);
-
-                //
-                this.state = {count: 0};
+                console.log('constructor', props);
             }
-
             render(){
-                return (
+                console.log('render');
+                return(
                     <div>
-                        <h1>
-                            {this.props.message} 이것은 클래스로 만든 컴포넌트 입니다.
-                        </h1>
-                        <p>{this.state.count}</p>
+                        <h2>Hello {this.props.name} - {this.state.age}</h2>
                     </div>
                 );
             }
-            componentDidMount(){
-                setTimeout(() => {
-                    // this.state.count = this.state.count + 1;
-                    // this.setState({
-                    //     count: this.state.count + 1,
-                    // });
-                    this.setState((previousState) => {
-                        const newState = {count: previousState.count + 1}
-                        return newState;
-                    })
-                }, 1000);    
+            componentWillMount(){
+                console.log('componentWillMount');
             }
+            componentDidMount(){
+                console.log('componentDidMount');
 
-            //클래스에서만 사용가능
-            static defaultProps = {
-                message: "기본값2",
-            };
+               this.interval = setInterval(() => {
+                    // console.log('setInterval');
+                    this.setState((state) => ({...state, age:state.age + 1}));
+                }, 1000);
+
+            }
+            componentWillReceiveProps(nextProps){
+                console.log("componentWillReceiveProps", nextProps);
+            }
+            shouldComponentUpdate(nextProps, nextState){
+                console.log("shouldComponentUpdate", nextProps, nextState);
+                return true;
+            }
+            componentWillUpdate(nextProps, nextState){
+                console.log("componentWillUpdate", nextProps, nextState);
+            }
+            componentDidUpdate(prevProps, prevState){
+                console.log("componentdidUpdate", prevProps, prevState);
+            }
+            componentWillUnMount(){
+                clearInterval(this.interval);
+            }
         }
 
-        ReactDOM.render(
-            <Component message="기본값 아님" />,
-            document.querySelector('#root')
-        );
+        ReactDOM.render(<App name="Mark"/>, document.querySelector('#root'));
     </script>
 </body>
 </html>
