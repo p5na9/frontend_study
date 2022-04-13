@@ -16,53 +16,97 @@
         console.log(React);
         console.log(ReactDOM);
         
+        // class App extends React.Component{
+        //     state = {
+        //         age: 39,
+        //     };
+        //     interval = null;
+        //     constructor(props){
+        //         super(props);
+        //         console.log('constructor', props);
+        //     }
+        //     render(){
+        //         console.log('render');
+        //         return(
+        //             <div>
+        //                 <h2>Hello {this.props.name} - {this.state.age}</h2>
+        //             </div>
+        //         );
+        //     }
+        //     // componentWillMount(){
+        //     //     console.log('componentWillMount');
+        //     // }
+
+        //     // static getDerivedStateFromProps(nextProps, prevState){
+        //     //     console.log("getDerivedStateFromProps", nextProps, prevState);
+        //     //     return {
+        //     //         age: 390, //새로운 state 설정
+        //     //     };
+        //     // }
+
+        //     componentDidMount(){
+        //         console.log('componentDidMount');
+
+        //        this.interval = setInterval(() => {
+        //             // console.log('setInterval');
+        //             this.setState((state) => ({...state, age:state.age + 1}));
+        //         }, 1000);
+
+        //     }
+        //     // componentWillReceiveProps(nextProps){
+        //     //     console.log("componentWillReceiveProps", nextProps);
+        //     // }
+        //     shouldComponentUpdate(nextProps, nextState){
+        //         console.log("shouldComponentUpdate", nextProps, nextState);
+        //         return true;
+        //     }
+        //     // componentWillUpdate(nextProps, nextState){
+        //     //     console.log("componentWillUpdate", nextProps, nextState);
+        //     // }
+        //     componentDidUpdate(prevProps, prevState){
+        //         console.log("componentdidUpdate", prevProps, prevState);
+        //     }
+        //     componentWillUnMount(){
+        //         clearInterval(this.interval);
+        //     }
+        // }
+
+        let i = 0;
         class App extends React.Component{
-            state = {
-                age: 39,
-            };
-            interval = null;
-            constructor(props){
-                super(props);
-                console.log('constructor', props);
-            }
+            state = {list: []};
+
+            
             render(){
-                console.log('render');
-                return(
-                    <div>
-                        <h2>Hello {this.props.name} - {this.state.age}</h2>
+                return (
+                    <div id="list" style={{height: 100, overflow: "scroll"}}>
+                        {this.state.list.map((i) => {
+                            return <div>{i}</div>;
+                        })}    
                     </div>
                 );
-            }
-            componentWillMount(){
-                console.log('componentWillMount');
+
             }
             componentDidMount(){
-                console.log('componentDidMount');
-
-               this.interval = setInterval(() => {
-                    // console.log('setInterval');
-                    this.setState((state) => ({...state, age:state.age + 1}));
+                setInterval(()=> {
+                    this.setState((state) => ({
+                        list: [...state.list, i++],
+                    }));
                 }, 1000);
+            }
 
+            getSnapShotBeforeUpdate(preProps, prevState){
+                if(prevState.list.length == this.state.list.length) return null;
+                const list = document.querySelector('#list');
+                return list.scrollHeight - list.scrollTop;
             }
-            componentWillReceiveProps(nextProps){
-                console.log("componentWillReceiveProps", nextProps);
-            }
-            shouldComponentUpdate(nextProps, nextState){
-                console.log("shouldComponentUpdate", nextProps, nextState);
-                return true;
-            }
-            componentWillUpdate(nextProps, nextState){
-                console.log("componentWillUpdate", nextProps, nextState);
-            }
-            componentDidUpdate(prevProps, prevState){
-                console.log("componentdidUpdate", prevProps, prevState);
-            }
-            componentWillUnMount(){
-                clearInterval(this.interval);
+
+            componentDidupdate(prevProps, prevState, snapshot){
+                console.log(snapshot);
+                if(snapshot == null) return;
+                const list = document.querySelector('#list');
+                list.scrollTop = list.scrollHeight - snapshot;
             }
         }
-
         ReactDOM.render(<App name="Mark"/>, document.querySelector('#root'));
     </script>
 </body>
